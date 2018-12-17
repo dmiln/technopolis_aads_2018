@@ -54,7 +54,7 @@ public class RedBlackTree<E extends Comparable<E>> implements ISelfBalancingSort
 
     protected RBNode root;
     private int N = 0;
-    private RBNode<E> TNILL;
+    private RBNode<E> TNILL = new RBNode<>();
 
     public RedBlackTree() {
         this(Comparator.naturalOrder());
@@ -89,7 +89,7 @@ public class RedBlackTree<E extends Comparable<E>> implements ISelfBalancingSort
         RBNode<E> y = TNILL;
         RBNode<E> x = root;
 
-        while (x != TNILL) {
+        while (x != TNILL && root != null) {
             y = x;
             if (comparator.compare(z.value, x.value) < 0) {
                 x = x.left;
@@ -117,9 +117,9 @@ public class RedBlackTree<E extends Comparable<E>> implements ISelfBalancingSort
 
     private void insertFixup(RBNode z) {
         RBNode<E> y;
-        while (z != root && z.parent.color == RBColor.RED) {
-            if (z.parent == z.parent.parent.left) { //родитель слева
-                y = z.parent.parent.left;
+        while (z != TNILL && z.parent.color == RBColor.RED) {
+            if (z.parent == z.parent.parent.left) {
+                y = z.parent.parent.right;
                 if (RBColor.RED == y.color) {
                     z.parent.color = RBColor.BLACK;
                     y.color = RBColor.BLACK;
@@ -128,13 +128,13 @@ public class RedBlackTree<E extends Comparable<E>> implements ISelfBalancingSort
                 } else if (z == z.parent.right) {
                     z = z.parent;
                     leftRotate(z);
-                } else {
-                    z.parent.color = RBColor.BLACK;
-                    z.parent.parent.color = RBColor.RED;
-                    rightRotate(z.parent.parent);
                 }
+                z.parent.color = RBColor.BLACK;
+                z.parent.parent.color = RBColor.RED;
+                rightRotate(z.parent.parent);
+
             } else {
-                y = z.parent.parent.right;
+                y = z.parent.parent.left;
                 if (RBColor.RED == y.color) {
                     z.parent.color = RBColor.BLACK;
                     y.color = RBColor.BLACK;
@@ -143,11 +143,10 @@ public class RedBlackTree<E extends Comparable<E>> implements ISelfBalancingSort
                 } else if (z == z.parent.left) {
                     z = z.parent;
                     rightRotate(z);
-                } else {
-                    z.parent.color = RBColor.BLACK;
-                    z.parent.parent.color = RBColor.RED;
-                    leftRotate(z.parent.parent);
                 }
+                z.parent.color = RBColor.BLACK;
+                z.parent.parent.color = RBColor.RED;
+                leftRotate(z.parent.parent);
             }
         }
         root.color = RBColor.BLACK;
